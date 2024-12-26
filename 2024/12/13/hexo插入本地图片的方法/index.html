@@ -1,0 +1,202 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>hexo插入本地图片的方法 | Tree Hole</title><meta name="author" content="BIN"><meta name="copyright" content="BIN"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="确认Hexo设置确认渲染插件打开.&#x2F;package.json文件，确认当前安装并启用的渲染插件是hexo-renderer-marked： 12345678910json&#123;  &#x2F;&#x2F; ...  &quot;dependencies&quot;: &#123;    &#x2F;&#x2F; ...    &quot;hexo-renderer-marked&quot;: &quot;^x.x.x&quot;,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hexo插入本地图片的方法">
+<meta property="og:url" content="http://example.com/2024/12/13/hexo%E6%8F%92%E5%85%A5%E6%9C%AC%E5%9C%B0%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/index.html">
+<meta property="og:site_name" content="Tree Hole">
+<meta property="og:description" content="确认Hexo设置确认渲染插件打开.&#x2F;package.json文件，确认当前安装并启用的渲染插件是hexo-renderer-marked： 12345678910json&#123;  &#x2F;&#x2F; ...  &quot;dependencies&quot;: &#123;    &#x2F;&#x2F; ...    &quot;hexo-renderer-marked&quot;: &quot;^x.x.x&quot;,">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://images.pexels.com/photos/13119652/pexels-photo-13119652.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load">
+<meta property="article:published_time" content="2024-12-13T08:44:45.000Z">
+<meta property="article:modified_time" content="2024-12-13T08:51:10.562Z">
+<meta property="article:author" content="BIN">
+<meta property="article:tag" content="教程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.pexels.com/photos/13119652/pexels-photo-13119652.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"><link rel="shortcut icon" href="/icon.ico"><link rel="canonical" href="http://example.com/2024/12/13/hexo%E6%8F%92%E5%85%A5%E6%9C%AC%E5%9C%B0%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"bottom-left"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'hexo插入本地图片的方法',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  isShuoshuo: false
+}</script><meta name="generator" content="Hexo 7.3.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load', preloader.endLoading)
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas  fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas  fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-heart"></i><span> 说说</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://images.pexels.com/photos/13119652/pexels-photo-13119652.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600&amp;lazy=load);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/com.ico" alt="Logo"><span class="site-name">Tree Hole</span></a><a class="nav-page-title" href="/"><span class="site-name">hexo插入本地图片的方法</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas  fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas  fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><i class="fa-fw fas fa-heart"></i><span> 说说</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">hexo插入本地图片的方法</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-12-13T08:44:45.000Z" title="发表于 2024-12-13 16:44:45">2024-12-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-13T08:51:10.562Z" title="更新于 2024-12-13 16:51:10">2024-12-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%89%8D%E7%AB%AF/">前端</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="确认Hexo设置"><a href="#确认Hexo设置" class="headerlink" title="确认Hexo设置"></a>确认Hexo设置</h2><h3 id="确认渲染插件"><a href="#确认渲染插件" class="headerlink" title="确认渲染插件"></a>确认渲染插件</h3><p>打开<code>./package.json</code>文件，确认当前安装并启用的渲染插件是<code>hexo-renderer-marked</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">json</span><br><span class="line">&#123;</span><br><span class="line">  // ...</span><br><span class="line">  &quot;dependencies&quot;: &#123;</span><br><span class="line">    // ...</span><br><span class="line">    &quot;hexo-renderer-marked&quot;: &quot;^x.x.x&quot;,</span><br><span class="line">    // ...</span><br><span class="line">  &#125;,</span><br><span class="line">  // ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="确认网站设置"><a href="#确认网站设置" class="headerlink" title="确认网站设置"></a>确认网站设置</h3><p>打开<code>./_config.yml</code>文件，修改或确认以下设置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">yaml</span><br><span class="line">post_asset_folder: true</span><br><span class="line">relative_link: false</span><br><span class="line">marked://这里的配置在原配置里没有</span><br><span class="line">  prependRoot: true</span><br><span class="line">  postAsset: true</span><br></pre></td></tr></table></figure>
+
+<p>设置详解：</p>
+<ul>
+<li><code>post_asset_folder: true</code><br>执行<code>hexo new post xxx</code>时，会同时生成<code>./source/_posts/xxx.md</code>文件和<code>./source/_posts/xxx</code>目录，可以将该文章相关联的资源放置在该资源目录中。</li>
+<li><code>relative_link: false</code><br>不要将链接改为与根目录的相对地址。此为默认配置。</li>
+<li><code>prependRoot: true</code><br>将文章根路径添加到文章内的链接之前。此为默认配置。</li>
+<li><code>postAsset: true</code><br>在<code>post_asset_folder</code>设置为<code>true</code>的情况下，在根据<code>prependRoot</code>的设置在所有链接开头添加文章根路径之前，先将文章内资源的路径解析为相对于资源目录的路径。</li>
+</ul>
+<p>举例说明：<br>执行<code>hexo new post demo</code>后，在<code>demo</code>文章的资源路径下存放了<code>a.jpg</code>和<code>cover.jpg</code>（用作封面），目录组织结构如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">shell</span><br><span class="line">./source/_posts</span><br><span class="line">├── demo.md</span><br><span class="line">└── demo</span><br><span class="line">    ├── a.jpg</span><br><span class="line">    └── cover.jpg</span><br></pre></td></tr></table></figure>
+
+<p>在<code>demo.md</code>的适当位置引用这两张图片，指定图片相对路径时需要假设当前目录为<code>./source/_posts/demo/</code>，而不是<code>demo.md</code>文件本身的所在目录。</p>
+<p><em>注意，这会导致本地编辑器无法正常预览图像，只能让Hexo生成的网页可以正常加载图像，此问题稍后解决；</em></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">markdown</span><br><span class="line">---</span><br><span class="line">title: 演示</span><br><span class="line">cover: cover.jpg</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">## 图片</span><br><span class="line">![一张示例图片](a.jpg)</span><br></pre></td></tr></table></figure>
+
+<p>现在Hexo生成的网页可以正常加载图像了,就像这样：</p>
+<p><img src="/2024/12/13/hexo%E6%8F%92%E5%85%A5%E6%9C%AC%E5%9C%B0%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/a.jpg"></p>
+<h2 id="修改渲染插件代码"><a href="#修改渲染插件代码" class="headerlink" title="修改渲染插件代码"></a>修改渲染插件代码</h2><p>目前为止，我们使用的方法还不能让本地编辑器和Hexo生成的网页同时正常显示图像。在FrontMatter部分的<code>cover.jpg</code>一般不需要在本地编辑器预览，这倒是没问题；但如果我们希望在本地编辑器预览文章中的图片，就最好把图片的相对路径改为<code>demo/a.jpg</code>。</p>
+<p>可是，<code>hexo-renderer-marked</code>渲染插件默认的图片相对路径根目录是<code>./source/_posts/demo/</code>，我们需要让这个路径向上回退一层，变成<code>demo.md</code>文件所在的目录，与本地编辑器预览时默认的根目录一致，这样既满足了本地编辑器的渲染需求，又能让Hexo正确加载网页中的图片。</p>
+<p>打开<code>./node_modules/hexo-renderer-marked/lib/renderer.js</code>，搜索<code>image</code>定位到修改图片相对路径的代码，按如下方式修改代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">javascript</span><br><span class="line"></span><br><span class="line">// Prepend root to image path</span><br><span class="line">image(href, title, text) &#123;</span><br><span class="line">  const &#123; hexo, options &#125; = this;</span><br><span class="line">  const &#123; relative_link &#125; = hexo.config;</span><br><span class="line">  const &#123; lazyload, figcaption, prependRoot, postPath &#125; = options;</span><br><span class="line"></span><br><span class="line">  if (!/^(#|\/\/|http(s)?:)/.test(href) &amp;&amp; !relative_link &amp;&amp; prependRoot) &#123;</span><br><span class="line">    if (!href.startsWith(&#x27;/&#x27;) &amp;&amp; !href.startsWith(&#x27;\\&#x27;) &amp;&amp; postPath) &#123;</span><br><span class="line">      const PostAsset = hexo.model(&#x27;PostAsset&#x27;);</span><br><span class="line">      // findById requires forward slash</span><br><span class="line"></span><br><span class="line">      // ============================== 以下代码有改动 ==============================</span><br><span class="line">      const fixPostPath = join(postPath, &#x27;../&#x27;);</span><br><span class="line">      const asset = PostAsset.findById(join(fixPostPath, href.replace(/\\/g, &#x27;/&#x27;)));</span><br><span class="line">      // const asset = PostAsset.findById(join(postPath, href.replace(/\\/g, &#x27;/&#x27;)));</span><br><span class="line">      // ============================== 以上代码有改动 ==============================</span><br><span class="line">      </span><br><span class="line">      // asset.path is backward slash in Windows</span><br><span class="line">      if (asset) href = asset.path.replace(/\\/g, &#x27;/&#x27;);</span><br><span class="line">    &#125;</span><br><span class="line">    href = url_for.call(hexo, href);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  let out = `&lt;img src=&quot;$&#123;encodeURL(href)&#125;&quot;`;</span><br><span class="line">  if (text) out += ` alt=&quot;$&#123;text&#125;&quot;`;</span><br><span class="line">  if (title) out += ` title=&quot;$&#123;title&#125;&quot;`;</span><br><span class="line">  if (lazyload) out += &#x27; loading=&quot;lazy&quot;&#x27;;</span><br><span class="line"></span><br><span class="line">  out += &#x27;&gt;&#x27;;</span><br><span class="line">  if (figcaption) &#123;</span><br><span class="line">    if (text) out += `&lt;figcaption aria-hidden=&quot;true&quot;&gt;$&#123;text&#125;&lt;/figcaption&gt;`;</span><br><span class="line">  &#125;</span><br><span class="line">  return out;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单地说，这里的修改就是将文章路径<code>postPath</code>换成了它的上一级路径<code>fixPostPath</code>，更换的方法就是在<code>postPath</code>后面加上<code>../</code>。</p>
+<p>现在，切换到<code>demo.md</code>，保留FrontMatter中<code>cover</code>的图片路径，将文章中的图片路径变更为<code>demo/a.jpg</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">markdown</span><br><span class="line">---</span><br><span class="line">title: 演示</span><br><span class="line">cover: cover.jpg</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">## 图片</span><br><span class="line">![一张示例图片](demo/a.jpg)</span><br></pre></td></tr></table></figure>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p><code>./node_modules</code>一般来说不被git追踪，而且相关插件在更新后会覆盖掉人为修改，所以这个改动一般难以跨设备同步。现阶段可以采用的办法之一便是在仓库里另外保存<code>renderer.js</code>，并在部署时、安装插件后，使用自动指令覆盖插件中的文件。</p>
+</article><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%99%E7%A8%8B/">教程</a></div><div class="post-share"><div class="social-share" data-image="https://images.pexels.com/photos/13119652/pexels-photo-13119652.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600&amp;lazy=load" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2024/12/13/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E7%94%B5%E6%B1%A0%E6%98%AF%E5%87%A0%E5%8F%B7%E7%94%B5%E6%B1%A0/" title="如何判断电池是几号电池"><img class="cover" src="https://images.pexels.com/photos/6015268/pexels-photo-6015268.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">如何判断电池是几号电池</div></div><div class="info-2"><div class="info-item-1">判断方法 电池在正极附近有字母表示电池是几号。对照如下：1号电池是D，2号电池是C，3号电池是A，5号电池是AA，7号电池AAA。   具体类型D型号就是1号电池，用途广泛，民用，军工，打火设置手电筒同，标准的D(平头)电池高度59.0±0.5mm，直径32.3±0.2mm。 C型号：2号电池，在手电筒跟影音设备上使用比较多。标准尺寸为电池高度49.5±0.5mm，直径25.3±0.2mm。 A型电池是3号电池，一般作为电池组使用，A型电池高度跟2号电池高度差不多，直径要稍细一点。标准的A(平头)电池高度49.0±0.5mm，直径16.8±0.2mm。 AA型电池是5号电池，这个大家最常见，电动剃须刀、电子玩具、数码设备等用的最多，很多AA型充电电池也多做电池组使用。 AAA号电池俗称7号电池，如下图，7号电池个头比五号电池要小一点，多用在遥控器等对体积有限制但耗电量又不太大的场合，多是多节组合使用。 </div></div></div></a><a class="pagination-related" href="/2024/12/23/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%A4%8D%E4%B9%A0%E5%A4%A7%E7%BA%B2/" title="操作系统复习大纲"><img class="cover" src="https://images.pexels.com/photos/7695423/pexels-photo-7695423.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">操作系统复习大纲</div></div><div class="info-2"><div class="info-item-1">...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2024/11/14/%E5%85%B3%E4%BA%8EVMWARE%E6%97%A0%E6%B3%95%E6%8B%96%E6%8B%BD%E6%96%87%E4%BB%B6%E4%BB%A5%E5%8F%8A%E5%A4%8D%E5%88%B6%E7%B2%98%E8%B4%B4%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" title="关于VMWARE无法拖拽文件以及复制粘贴问题的解决方法"><img class="cover" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQqej_R89nzL8ARWQYIZxhla7qf1VO9z5ozA&s" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-14</div><div class="info-item-2">关于VMWARE无法拖拽文件以及复制粘贴问题的解决方法</div></div><div class="info-2"><div class="info-item-1">前几天做信安实验的时候笔记本里的vmware出了点问题，无法从主机拖拽文件到虚拟机内，也不能将主机复制的内容粘贴到虚拟机内。网上找了些相关的解决方案，就在这里留个档吧 方案一（一般卸载重装就解决了）1.卸载VMware Tools 1sudo apt-get autoremove open-vm-tools  2.联网安装VMware tools 1sudo apt-get install open-vm-tools-desktop  1sudo apt-get install open-vm-tools  方案二第一种方法：1.在菜单栏打开 虚拟机-&gt;安装VMware Tools 2.在图形界面会弹出一个VMware Tools光盘图标，并自动打开这个目录。将这个目录下的文件拷贝到&#x2F;home下 3.到&#x2F;home目录下，使用命令 tar -zxf VM*,解压，进入解压目录，运行：.&#x2F;vmware-install.pl ，然后一路按回车OK就行了，安装完成后会 重新启动系统。 &#x2F;&#x2F;&#x2F;如果在菜单栏打开...</div></div></div></a><a class="pagination-related" href="/2024/11/26/%E5%88%A0%E9%99%A4%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA/" title="删除U盘系统分区"><img class="cover" src="https://images.pexels.com/photos/11216304/pexels-photo-11216304.jpeg?auto=compress&cs=tinysrgb&w=600" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-26</div><div class="info-item-2">删除U盘系统分区</div></div><div class="info-2"><div class="info-item-1">  1234567891011diskpartlist diskselect disk # #指的是想要删除的分区的驱动器号）list partitionselect partition # (#指的是想要删除的分区号）delete partition override(delete partition override命令用于删除受到保护的分区，如恢复分区/OEM分区。如果想要删除U盘的分区，请使用delete partition命令。)  ​                                                                                                                            大概像这样  </div></div></div></a><a class="pagination-related" href="/2024/12/13/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E7%94%B5%E6%B1%A0%E6%98%AF%E5%87%A0%E5%8F%B7%E7%94%B5%E6%B1%A0/" title="如何判断电池是几号电池"><img class="cover" src="https://images.pexels.com/photos/6015268/pexels-photo-6015268.jpeg?auto=compress&cs=tinysrgb&w=600" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-13</div><div class="info-item-2">如何判断电池是几号电池</div></div><div class="info-2"><div class="info-item-1">判断方法 电池在正极附近有字母表示电池是几号。对照如下：1号电池是D，2号电池是C，3号电池是A，5号电池是AA，7号电池AAA。   具体类型D型号就是1号电池，用途广泛，民用，军工，打火设置手电筒同，标准的D(平头)电池高度59.0±0.5mm，直径32.3±0.2mm。 C型号：2号电池，在手电筒跟影音设备上使用比较多。标准尺寸为电池高度49.5±0.5mm，直径25.3±0.2mm。 A型电池是3号电池，一般作为电池组使用，A型电池高度跟2号电池高度差不多，直径要稍细一点。标准的A(平头)电池高度49.0±0.5mm，直径16.8±0.2mm。 AA型电池是5号电池，这个大家最常见，电动剃须刀、电子玩具、数码设备等用的最多，很多AA型充电电池也多做电池组使用。 AAA号电池俗称7号电池，如下图，7号电池个头比五号电池要小一点，多用在遥控器等对体积有限制但耗电量又不太大的场合，多是多节组合使用。 </div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">BIN</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">5</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">准备结束2024</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A1%AE%E8%AE%A4Hexo%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.</span> <span class="toc-text">确认Hexo设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A1%AE%E8%AE%A4%E6%B8%B2%E6%9F%93%E6%8F%92%E4%BB%B6"><span class="toc-number">1.1.</span> <span class="toc-text">确认渲染插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A1%AE%E8%AE%A4%E7%BD%91%E7%AB%99%E8%AE%BE%E7%BD%AE"><span class="toc-number">1.2.</span> <span class="toc-text">确认网站设置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%B8%B2%E6%9F%93%E6%8F%92%E4%BB%B6%E4%BB%A3%E7%A0%81"><span class="toc-number">2.</span> <span class="toc-text">修改渲染插件代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="toc-number">3.</span> <span class="toc-text">注意事项</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/12/23/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%A4%8D%E4%B9%A0%E5%A4%A7%E7%BA%B2/" title="操作系统复习大纲"><img src="https://images.pexels.com/photos/7695423/pexels-photo-7695423.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="操作系统复习大纲"/></a><div class="content"><a class="title" href="/2024/12/23/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E5%A4%8D%E4%B9%A0%E5%A4%A7%E7%BA%B2/" title="操作系统复习大纲">操作系统复习大纲</a><time datetime="2024-12-23T08:16:27.000Z" title="发表于 2024-12-23 16:16:27">2024-12-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/13/hexo%E6%8F%92%E5%85%A5%E6%9C%AC%E5%9C%B0%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/" title="hexo插入本地图片的方法"><img src="https://images.pexels.com/photos/13119652/pexels-photo-13119652.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600&amp;lazy=load" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="hexo插入本地图片的方法"/></a><div class="content"><a class="title" href="/2024/12/13/hexo%E6%8F%92%E5%85%A5%E6%9C%AC%E5%9C%B0%E5%9B%BE%E7%89%87%E7%9A%84%E6%96%B9%E6%B3%95/" title="hexo插入本地图片的方法">hexo插入本地图片的方法</a><time datetime="2024-12-13T08:44:45.000Z" title="发表于 2024-12-13 16:44:45">2024-12-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/13/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E7%94%B5%E6%B1%A0%E6%98%AF%E5%87%A0%E5%8F%B7%E7%94%B5%E6%B1%A0/" title="如何判断电池是几号电池"><img src="https://images.pexels.com/photos/6015268/pexels-photo-6015268.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="如何判断电池是几号电池"/></a><div class="content"><a class="title" href="/2024/12/13/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E7%94%B5%E6%B1%A0%E6%98%AF%E5%87%A0%E5%8F%B7%E7%94%B5%E6%B1%A0/" title="如何判断电池是几号电池">如何判断电池是几号电池</a><time datetime="2024-12-13T07:52:35.000Z" title="发表于 2024-12-13 15:52:35">2024-12-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/26/%E5%88%A0%E9%99%A4%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA/" title="删除U盘系统分区"><img src="https://images.pexels.com/photos/11216304/pexels-photo-11216304.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=600" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="删除U盘系统分区"/></a><div class="content"><a class="title" href="/2024/11/26/%E5%88%A0%E9%99%A4%E7%A3%81%E7%9B%98%E5%88%86%E5%8C%BA/" title="删除U盘系统分区">删除U盘系统分区</a><time datetime="2024-11-26T15:22:50.000Z" title="发表于 2024-11-26 23:22:50">2024-11-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/14/%E5%85%B3%E4%BA%8EVMWARE%E6%97%A0%E6%B3%95%E6%8B%96%E6%8B%BD%E6%96%87%E4%BB%B6%E4%BB%A5%E5%8F%8A%E5%A4%8D%E5%88%B6%E7%B2%98%E8%B4%B4%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" title="关于VMWARE无法拖拽文件以及复制粘贴问题的解决方法"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRQqej_R89nzL8ARWQYIZxhla7qf1VO9z5ozA&amp;s" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="关于VMWARE无法拖拽文件以及复制粘贴问题的解决方法"/></a><div class="content"><a class="title" href="/2024/11/14/%E5%85%B3%E4%BA%8EVMWARE%E6%97%A0%E6%B3%95%E6%8B%96%E6%8B%BD%E6%96%87%E4%BB%B6%E4%BB%A5%E5%8F%8A%E5%A4%8D%E5%88%B6%E7%B2%98%E8%B4%B4%E9%97%AE%E9%A2%98%E7%9A%84%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" title="关于VMWARE无法拖拽文件以及复制粘贴问题的解决方法">关于VMWARE无法拖拽文件以及复制粘贴问题的解决方法</a><time datetime="2024-11-14T15:24:29.000Z" title="发表于 2024-11-14 23:24:29">2024-11-14</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2024 By BIN</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><div class="js-pjax"></div><canvas class="fireworks" mobile="true"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
